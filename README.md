@@ -6,12 +6,13 @@ Custom firmware for the XiangGuo (橡果工坊) **XG-MINI0864** WiFi pixel clock
 
 ## Hardware
 
-- ESP32-C3 (rev v0.4, 160 MHz), 4 MB flash, native USB Serial/JTAG (VID 303A, PID 1001)
+- ESP32-C3 (rev v0.4, 160 MHz), native USB Serial/JTAG (VID 303A, PID 1001)
+- Memory: about 320 KB SRAM, no PSRAM. 4 MB flash: two 1.25 MB app slots (OTA), 1.375 MB LittleFS for web files and config, 20 KB NVS
 - WiFi (station plus AP, web UI with OTA) and BLE 5 (unused by the stock firmware)
 - 8x64 addressable LED matrix (Arduino_GFX, 64x16 canvas over a 64x8 output)
 - I2S microphone, 3 touch buttons, passive buzzer, photoresistor, RTC, AHT20 temperature/humidity sensor
 
-Stock features: clock with NTP (aliyun), AMap weather, 5 alarms, countdown/count-up timer, brightness (manual or auto), music spectrum.
+Stock features: clock with NTP (aliyun), AMap weather, 5 alarms, countdown/count-up timer, brightness (manual or auto), music spectrum. See [stock web page and API](docs/stock-web-api.md).
 
 ## GPIO map
 
@@ -37,8 +38,6 @@ Not mapped yet: GPIO20 and GPIO21 (the UART0 pins, probably unused).
 64 columns by 8 rows, 512 pixels on one data line (GPIO7). Pixel 0 is the bottom-left corner. Every column runs bottom to top (no zigzag), and columns advance left to right, so the last pixel (511) is top-right.
 
     index = x * 8 + (7 - y)        x = 0..63 from the left, y = 0..7 from the top
-
-Tested at brightness 8 of 255. Even 16 is already quite bright for green on this panel.
 
 ## I2C devices
 
