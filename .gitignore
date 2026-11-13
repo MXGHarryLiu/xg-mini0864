@@ -1,0 +1,4 @@
+.pio/
+*.bin
+!package/**/*.bin
+dump/

@@ -1,0 +1,32 @@
+name:        xg-mini0864 stock firmware (sanitized)
+file:        xg-mini0864_stock_v1.1_flash_4MB.bin
+sha256:      a56f15d0909a823c1490818fce4ffd05dbda7803ebf57d26727cb4b3ebcd7ae7
+size:        4194304 bytes (full flash image, offset 0x0)
+source:      esptool read-flash 0 ALL from a stock unit, then sanitized (see below)
+device:      XiangGuo (橡果工坊) XG-MINI0864, 8x64 LED matrix
+software:    v1.1 (config v1.1), built Oct 4 2023
+framework:   Arduino-ESP32 on ESP-IDF v4.4.6 (PlatformIO env lolin_c3_mini)
+chip:        ESP32-C3 (QFN32) rev v0.4, 160 MHz, 40 MHz crystal
+flash:       4 MB (manufacturer 0x5e, device 0x4016), DIO 80 MHz
+usb:         native USB Serial/JTAG, VID 303A PID 1001
+security:    flash encryption off, secure boot off, download mode enabled, JTAG enabled
+restore:     esptool --chip esp32c3 write-flash 0x0 xg-mini0864_stock_v1.1_flash_4MB.bin
+
+sanitization (bootloader, partition table, otadata, app0, app1 are byte-identical to the dump):
+  nvs       0x009000  blanked (0xFF). Removes WiFi credentials and PHY calibration (device MAC).
+            The device recalibrates and re-creates NVS on first boot.
+  spiffs    0x290000  LittleFS rebuilt from scratch with the 4 stock files (XG.jpg, power.png,
+            test.html, config.json). config.json: WiFi/AP passwords, SSID, weather location and
+            token cleared, scanned WiFi list cleared, timezone reset to +8. Old log-structured
+            copies of the previous config are gone.
+  coredump  0x3f0000  blanked (0xFF)
+  The seller's own default WiFi (CMCC-XGGF) and its password are not retained either.
+  Not tested: booting this exact image on hardware (see README).
+
+partitions:
+  nvs       0x009000  0x005000
+  otadata   0x00e000  0x002000
+  app0      0x010000  0x140000
+  app1      0x150000  0x140000
+  spiffs    0x290000  0x160000  (LittleFS)
+  coredump  0x3f0000  0x010000
